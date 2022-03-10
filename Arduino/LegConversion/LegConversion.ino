@@ -54,6 +54,7 @@ void loop()
   else if (ch6 > 1060 && ch6 < 1068)
   {  
     Serial.println("2-3-2 mode started");
+    
     // 2-3-2 interlock
     interlock = 1;
     //setall(80,0,0);
@@ -62,7 +63,7 @@ void loop()
       delay(300); // wait for button press to end
       ch6 = pulseIn(CH6_PIN, HIGH, 25000); // read channel      
       if (ch5 > 1060 || ch6 > 1060) 
-      {         // dirty hack to allow PWM/analog voltage to stabalise 
+      { // dirty hack to allow PWM/analog voltage to stabalise 
         delay(100);
         ch6 = pulseIn(CH6_PIN, HIGH, 25000);        // read channel / decide what to do
       }
@@ -70,33 +71,49 @@ void loop()
       //this button press exits the 2-3-2 interlock
       if (ch6 > 1060 && ch6 < 1068) 
       {
-
         //disable all relays
         for(int i = 8; i < 14; i++) 
           digitalWrite(i, HIGH);
           delay(200);
-          interlock = 0;  // break out of interlock
-       }
-       else if (ch6 > 1070 && ch6 < 1082) 
-       {  // start putting foot down
-          digitalWrite(13,HIGH);              // put foot down
-          interlock = 2;                      // set interlock to 3 leg mode lock
-       }                                   // end putting foot down
-          
-       else if (ch6 > 1090 && ch6 < 1099 && interlock == 2)// start shoulder conversion to 3 legs 
-       { 
-          digitalWrite(10,HIGH);
-       }                                                      // end shoulder conversion to 3 legs
-  
-      else if (ch6 > 1108 && ch6 < 1119) // start conversion to 2 legs
-      { 
-        digitalWrite(11, HIGH);
-        interlock = 3;                      // set interlock to 2 leg lock
+          interlock = 0;// break out of interlock
       }
-  
-      else if (ch6 > 1130 && ch6 < 1142 && interlock == 3) // start putting foot up
+      //foot down
+      else if (ch6 > 1070 && ch6 < 1082) 
       {  
-        digitalWrite(12,HIGH);  
+        Serial.println("DOWN button");
+        digitalWrite(CENTER_UP_PIN, HIGH);
+        digitalWrite(CENTER_DOWN_PIN, LOW);
+        interlock = 2;// set interlock to 3 leg mode lock
+      }                                   
+
+      //3 leg conversion
+      else if (ch6 > 1090 && ch6 < 1099 && interlock == 2)// start shoulder conversion to 3 legs 
+      {         
+        Serial.println("3 leg button");
+        digitalWrite(LEFT_B_PIN, HIGH);
+        digitalWrite(RIGHT_B_PIN, HIGH);
+        digitalWrite(LEFT_A_PIN, LOW);
+        digitalWrite(RIGHT_A_PIN, LOW);
+      }                                                   
+
+      //2 leg conversion
+      else if (ch6 > 1108 && ch6 < 1119) 
+      { 
+        Serial.println("2 leg button");
+        digitalWrite(LEFT_A_PIN, HIGH);
+        digitalWrite(RIGHT_A_PIN, HIGH);
+        digitalWrite(LEFT_B_PIN, LOW);
+        digitalWrite(RIGHT_B_PIN, LOW);
+        
+        interlock = 3;// set interlock to 2 leg lock
+      }
+
+      //foot up
+      else if (ch6 > 1130 && ch6 < 1142 && interlock == 3)
+      {  
+        Serial.println("UP button");
+        digitalWrite(CENTER_DOWN_PIN, HIGH);
+        digitalWrite(CENTER_UP_PIN, LOW);  
       }                 
     }
   }
