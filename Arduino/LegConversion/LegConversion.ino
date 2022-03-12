@@ -36,13 +36,63 @@ void setup()
   Serial.begin(115200);
 }
 
+int min = 2000, max = 0;
+
 void loop() 
 {
+ 
+
+/*
+ * CH6
+ * 0 - 988 - 996
+ * 10 - 1004 - 1013
+ * 20 - 1019 - 1028
+ * 30 - 1037 - 1048
+ * 40 - 1058 - 1071
+ * 50 - 1083 - 1097
+ * 60 - 1108 - 1125
+ * 70 - 1139 - 1159
+ * 80 - 1175 - 1198
+ * 90 - 1219 - 1243
+ * 100 - 1270 - 1292
+ * 110 - 1333 - 1354
+ * 120 - 1409 - 1451
+ * 
+ * 130 - 1509 - 1533
+ * 140 - 1627 - 1649
+ * 150 - 1732 - 1753
+ * 160 - 1816 - 1845
+ * 170 - 1878 - 1903
+ * 180 - 1935 - 1951
+ * 190 - 1959 - 1966
+ * 200 - not sny higher???
+ * 210
+ * 220
+ * 230
+ * 240
+ * 250
+ * 
+ * 
+ */
+  
   unsigned long currentMillis = millis();
   
   ch5 = pulseIn(CH5_PIN, HIGH, 25000); // Read the pulse width of 
   ch6 = pulseIn(CH6_PIN, HIGH, 25000); // each channel
-  
+
+  if(ch6 > 0)
+  {
+    if(ch6 < min)
+      min = ch6;
+    if(ch6 > max)
+      max = ch6;  
+      
+    Serial.print("CH6 min = ");
+    Serial.println(min);
+    Serial.print("CH6 max = ");
+    Serial.println(max);
+  }
+  /*
   if (ch5 > 1060 || ch6 > 1060) // dirty hack to allow PWM/analog voltage to stabalise 
   {          
     delay(100);
@@ -51,6 +101,7 @@ void loop()
   }  
   
   // -------------------start 2-3-2 mode stuff------------
+  //action 40
   else if (ch6 > 1060 && ch6 < 1068)
   {  
     Serial.println("2-3-2 mode started");
@@ -117,6 +168,7 @@ void loop()
       }                 
     }
   }
+  */
 }    
 // -------------------end 2-3-2 mode stuff------------             
  
