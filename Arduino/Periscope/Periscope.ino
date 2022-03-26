@@ -52,16 +52,24 @@ void setup()
   pixels.show();
 
   //set up limit switch interrupts
-  attachInterrupt(UP_PIN, up_isr, FALLING);
-  attachInterrupt(DOWN_PIN, down_isr, FALLING);
+  attachInterrupt(digitalPinToInterrupt(UP_PIN), up_isr, FALLING);
+  attachInterrupt(digitalPinToInterrupt(DOWN_PIN), down_isr, FALLING);
   
   //set up as i2c slave
-  Wire.begin(0x55);// join i2c bus
-  Wire.onReceive(receive);
+  //Wire.begin(0x55);// join i2c bus
+  //Wire.onReceive(receive);
+  delay(4000);
+  current_state = go_up;
 }
 
 void loop() 
 {
+  if(Serial.available())
+  {
+    Serial.read();
+    current_state = go_up;
+  }
+  
   switch(current_state)
   {
     case waiting:
