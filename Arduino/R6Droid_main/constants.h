@@ -38,19 +38,32 @@
 #define PROJECTOR 15
 
 /* Servo positions */
-#define FLAP_OPEN 180
-#define FLAP_CLOSED 90
+#define FLAP_OPEN 2300
+#define FLAP_CLOSED 1200
 
-//can the above constants work?
-#define SIDE_FLAP_OPEN 180
-#define SIDE_FLAP_CLOSED 90
+#define SIDE_FLAP_OPEN 2000
+#define SIDE_FLAP_CLOSED 400
 
-#define PROJECTOR_UP 180
-#define PROJECTOR_DOWN 150
+#define PROJECTOR_UP 500
+#define PROJECTOR_DOWN 1300
 
-#define LFS_LEFT 180
-#define LFS_MIDDLE 90
-#define LFS_RIGHT 0
+#define LFS_LEFT 2400
+#define LFS_MIDDLE 1400
+#define LFS_RIGHT 400
+
+#define UPPER_ARM 0
+#define UPPER_ARM_OPEN 2000
+#define UPPER_ARM_CLOSED 400
+
+#define LOWER_ARM 15
+#define LOWER_ARM_OPEN 2400
+#define LOWER_ARM_CLOSED 400
+
+/* i2c devices */
+#define ARM_PWM 0x41
+#define HEAD_PWM 0x42
+#define PERISCOPE_ADDR 0x55
+#define PERISCOPE_ACTIVATE 0xAA
 
 #endif
 

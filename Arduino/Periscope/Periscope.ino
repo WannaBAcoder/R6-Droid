@@ -18,7 +18,7 @@
 //standard servo control in degrees
 #define LEFT 0
 #define RIGHT 180
-#define MIDDLE 90
+#define MIDDLE 80
 
 #define NUM_PIXELS 4
 
@@ -56,19 +56,20 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(DOWN_PIN), down_isr, FALLING);
   
   //set up as i2c slave
-  //Wire.begin(0x55);// join i2c bus
-  //Wire.onReceive(receive);
-  delay(4000);
-  current_state = go_up;
+  Wire.begin(0x55);// join i2c bus
+  Wire.onReceive(receive);
+
+  delay(100);
+  current_state = waiting;//ensure we're stll in waiting state on startup
 }
 
 void loop() 
 {
-  if(Serial.available())
-  {
-    Serial.read();
-    current_state = go_up;
-  }
+//  if(Serial.available())
+//  {
+//    Serial.read();
+//    current_state = go_up;
+//  }
   
   switch(current_state)
   {
