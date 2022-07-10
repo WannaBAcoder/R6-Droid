@@ -15,10 +15,10 @@ Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
 
 //Variables for menu
 int column = 0;
-int function = 10;
+int function = 1;
 int buttonValue = 0;
 
-int buttons[] = {2, 3, 4, 7, 8, 9, 11, 10, 13, 12};
+int buttons[] = {2, 5, 4, 7, 8, 9, 11, 10, 13, 12};
 
 int text_length = 0;
 enum states{interlock, down, leg3, leg2, up};
@@ -36,9 +36,9 @@ void setup()
   lcd.clear();
   lcd.setBacklight(GREEN);
   lcd.print("Actions         ");
-  print_screen(function/10); 
+  print_screen(function); 
   
-  pinMode(5, OUTPUT); // channel 5
+  pinMode(3, OUTPUT); // channel 5
   pinMode(6, OUTPUT); // channel 6
 
   for(int i = 0; i < 10; i++)
@@ -68,7 +68,7 @@ void loop()
       
     lcd.print(buttonValue);
  
-    analogWrite(6, buttonValue*10);//write button value PWM
+    analogWrite(6, buttonValue*15);//write button value PWM
     clear_ch6 = 1;
     clear_ch6_time = millis();
 
@@ -85,8 +85,9 @@ void loop()
       lcd.setCursor(0,0);
       lcd.print("Actions         ");
       lcd.setBacklight(GREEN);
-      column = column - 13;
-      column = constrain(column,0,13);   
+
+      if(column == 10)
+        column = 0;   
 
       print_screen(function);
     }
@@ -95,9 +96,10 @@ void loop()
       lcd.setCursor(0,0);
       lcd.print("Sounds           ");
       lcd.setBacklight(RED);
-      column = column + 13;
-      column = constrain(column,0,13);
-      
+
+      if(column == 0)
+        column = 10;
+         
       lcd.setCursor(0,1);
       lcd.print(function);
       lcd.print("             ");
@@ -112,14 +114,17 @@ void loop()
     }
     if (LCD_buttons & BUTTON_UP) 
     {
-      function = function + 1;
-      print_screen(function); 
+      if(function + 1 < 11)
+      {
+        function = function + 1;
+        print_screen(function); 
+
+      }
     }
 
-    
     if (LCD_buttons & BUTTON_SELECT) 
     {
-      if(column == 13)//sounds only called numbers
+      if(column == 10)//sounds only called numbers
       {
         if(function >= 10)
           lcd.setCursor(14,1);
@@ -146,7 +151,7 @@ void loop()
         lcd.print(function);
       }
       
-      analogWrite(5, (column*10)+(function*10));
+      analogWrite(3, (column*7)+(function*7));
       clear_ch5 = 1;
       clear_ch5_time = millis();
     }
@@ -155,9 +160,9 @@ void loop()
   if(clear_ch5 || clear_ch6)
   {
     //shut off command after period of time
-    if(millis() - clear_ch5_time >= 1000)
+    if(millis() - clear_ch5_time >= 500)
     {
-      analogWrite(5, 0);
+      analogWrite(3, 0);
   
       lcd.setCursor(13,1);
       lcd.print("   ");
@@ -165,7 +170,7 @@ void loop()
     }
   
     //shut off command after period of time
-    if(millis() - clear_ch6_time >= 1000)
+    if(millis() - clear_ch6_time >= 500)
     {
       analogWrite(6, 0);
   
@@ -180,10 +185,10 @@ void loop()
 //This function allows for custom labels for actions
 void print_screen(int func)
 {
-  function = constrain(function,0,12);
+  function = constrain(function,0,10);
   lcd.setCursor(0,1);
 
-  if(column == 13)
+  if(column == 10)
   {
     lcd.print(func);
     lcd.print("              ");
