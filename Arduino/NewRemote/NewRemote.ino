@@ -160,7 +160,7 @@ void loop()
   if(clear_ch5 || clear_ch6)
   {
     //shut off command after period of time
-    if(millis() - clear_ch5_time >= 500)
+    if(millis() - clear_ch5_time >= 750)
     {
       analogWrite(3, 0);
   
@@ -170,7 +170,7 @@ void loop()
     }
   
     //shut off command after period of time
-    if(millis() - clear_ch6_time >= 500)
+    if(millis() - clear_ch6_time >= 750)
     {
       analogWrite(6, 0);
   

@@ -6,8 +6,9 @@ volatile int lcd_pulse_width = 0;
 
 unsigned long lcd_sample_time = 0;
 unsigned long lcd_last_press = 0;
-
-
+volatile bool get_max = 0;
+volatile unsigned long max_start_time = 0;
+volatile unsigned long max_end_time = 0;
 /*
  * CH5 - LCD functions
 */
@@ -43,29 +44,32 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(CH5_PIN), lcd_pulse_timer, CHANGE);
 }
 
-int max = 900;
+int max = 0;
 int min = 2000;
 
 void loop() 
 {  
-  //Serial.println(lcd_pulse_width);  
-  if(millis() - lcd_sample_time >= 250)//only sample the LCD after
+
+  if(get_max)//determine max pulse width for transmit period
   {
-    cli();//disable interrupts
+    if(millis() - max_start_time >= 750)//time to compute, react
+    {      
+      int lcd_function = lcd_function_check(max);//figure out which button was pressed
     
-    int lcd_function = lcd_function_check(lcd_pulse_width);//figure out which button was pressed
-    
-    if(lcd_function > 0 && millis() - lcd_last_press > 1000)//debounce the button response
-    {
       Serial.print("LCD functoin: ");
       Serial.println(lcd_function);  
-      lcd_last_press = millis();
+      Serial.println(max);
+    
+      get_max = 0;//finsih getting max
+      max = 0;//reset max for next time
+      max_end_time = millis();//record time to avoid double couting same transmit
     }
-    lcd_sample_time = millis();
-
-    sei();//enable interrupts
-  }
-  
+    else//compute the max until for transmit period
+    {
+      if(lcd_pulse_width > max)
+        max = lcd_pulse_width;
+    }
+  } 
 }
 
 //function for determining which button was pressed
@@ -96,25 +100,25 @@ int lcd_function_check(int pulse)
     lcd_val = 10;
 
   //parse sounds
-  else if(pulse > ACTION10 && pulse < SOUND1)
+  else if(pulse > ACTION10-SLACK && pulse < SOUND1)
     lcd_val = 11;
-  else if(pulse > SOUND1 && pulse < SOUND2)
+  else if(pulse > SOUND1-SLACK && pulse < SOUND2)
     lcd_val = 12;
-  else if(pulse > SOUND2 && pulse < SOUND3)
+  else if(pulse > SOUND2-SLACK && pulse < SOUND3)
     lcd_val = 13;
-  else if(pulse > SOUND3 && pulse < SOUND4)
+  else if(pulse > SOUND3-SLACK && pulse < SOUND4)
     lcd_val = 14;
-  else if(pulse > SOUND4 && pulse < SOUND5)
+  else if(pulse > SOUND4-SLACK && pulse < SOUND5)
     lcd_val = 15;
-  else if(pulse > SOUND5 && pulse < SOUND6)
+  else if(pulse > SOUND5-SLACK && pulse < SOUND6)
     lcd_val = 16;
-  else if(pulse > SOUND6 && pulse < SOUND7)
+  else if(pulse > SOUND6-SLACK && pulse < SOUND7)
     lcd_val = 17;
-  else if(pulse > SOUND7 && pulse < SOUND8)
+  else if(pulse > SOUND7-SLACK && pulse < SOUND8)
     lcd_val = 18;
-  else if(pulse > SOUND8 && pulse < SOUND9)
+  else if(pulse > SOUND8-SLACK && pulse < SOUND9)
     lcd_val = 19;
-  else if(pulse > SOUND9 && pulse < SOUND10)
+  else if(pulse > SOUND9-SLACK && pulse < SOUND10)
     lcd_val = 20;
   else
     lcd_val = 0;  
@@ -122,6 +126,7 @@ int lcd_function_check(int pulse)
   return lcd_val;
 }
 
+//calculate LCD function pulse widths
 void lcd_pulse_timer(void)
 {
   lcd_current_time  = micros();
@@ -131,6 +136,16 @@ void lcd_pulse_timer(void)
     
     if(lcd_pulses < 2000)
       lcd_pulse_width = lcd_pulses;
+
+    //determine if we have a valid action pulse width, and arent responding to an existing one again
+    if(lcd_pulse_width > 996 && !get_max)
+    {
+      if(millis() - max_end_time >= 250 )
+      {
+        get_max = 1;//start recording max for this transmit period
+        max_start_time = millis();//record start of transmit period
+      }
+    }
       
     lcd_start_time = lcd_current_time;
   }
