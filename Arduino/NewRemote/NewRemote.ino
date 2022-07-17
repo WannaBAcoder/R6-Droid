@@ -71,8 +71,6 @@ void loop()
     analogWrite(6, buttonValue*15);//write button value PWM
     clear_ch6 = 1;
     clear_ch6_time = millis();
-
-    delay(1000);
   }
 
 
