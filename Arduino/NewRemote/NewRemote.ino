@@ -201,20 +201,20 @@ void print_screen(int func)
         text_length = 9;
       break;
       case 2:
-        lcd.print("LEG DOWN        ");
-        text_length = 8;
-      break;
-      case 3:
-        lcd.print("3 LEG MODE      ");
-        text_length = 10;
-      break;
-      case 4:
         lcd.print("2 LEG MODE      ");
         text_length = 10;
       break;
-      case 5:
+      case 3:
         lcd.print("LEG UP          ");
         text_length = 6;
+      break;
+      case 4:
+        lcd.print("LEG DOWN        ");
+        text_length = 8;
+      break;
+      case 5:
+        lcd.print("3 LEG MODE      ");
+        text_length = 10;
       break;
       default: 
         lcd.print(func);
