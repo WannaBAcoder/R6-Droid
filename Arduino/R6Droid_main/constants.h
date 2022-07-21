@@ -4,10 +4,24 @@
 #include <Wire.h>
 #include <EEPROM.h>
 #include <Adafruit_PWMServoDriver.h>
+#include <SoftwareSerial.h>
+#include "Adafruit_Soundboard.h"
+#include <Adafruit_NeoPixel.h>
+
+#define LED_PIN 13
+#define LED_COUNT 40//figure this out
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRBW + NEO_KHZ800);
+
+#define SFX_TX 5
+#define SFX_RX 6
+#define SFX_RST A0
+SoftwareSerial sound_board = SoftwareSerial(SFX_TX, SFX_RX);//tx, rx
+Adafruit_Soundboard sfx = Adafruit_Soundboard(&sound_board, NULL, SFX_RST);
 
 /* RX pin Definitions */
 #define CH5_PIN 2
 #define CH6_PIN 3
+
 
 /* 2-3-2 Drive mode relays */
 #define LEFT_A_PIN 8 //3-leg mode
@@ -99,11 +113,11 @@
 #define BUTTON9 1830
 #define BUTTON10 1968
 
-#define ARM_INTERVAL 15000
-#define PROJECTOR_INTERVAL 1000
-#define BEEP_INTERVAL 25000
-#define FLAPS_INTERVAL 31000
-#define LFS_INTERVAL 120000
+#define ARM_INTERVAL 5000
+#define PROJECTOR_INTERVAL 5000
+#define BEEP_INTERVAL 5000
+#define FLAPS_INTERVAL 5000
+#define LFS_INTERVAL 5000
 
 
 /* Servo positions */
@@ -168,9 +182,35 @@ bool timed_LFS = 0;
 
 unsigned long arm_time = 0;
 unsigned long projector_time = 0;
-unsigned long top_flaps_time = 0;
+unsigned long flaps_time = 0;
 unsigned long beep_time = 0;
+unsigned long LFS_time = 0;
 
 int interlock = 0;
+
+
+int R = 50;
+int G = 0;
+int B = 0;
+
+unsigned long previousLEDMillis = 0;
+unsigned long previousPixelMillis = 0;
+unsigned long previousCascadeMillis = 0;
+
+long pixelTime = 50;
+long cascadeTime = 300;
+long LEDTime = 500;
+
+int LEDState = 0;
+int flag1 = 0;
+int flag2 = 0;
+int flag3 = 0;
+int flag4 = 0;
+int flag5 = 0;
+int flag6 = 0;
+int flag7 = 0;
+int flag40 = 0;
+
+int pixel = 0;
 
 #endif
