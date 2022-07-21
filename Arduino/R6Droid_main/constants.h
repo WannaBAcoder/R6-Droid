@@ -2,6 +2,7 @@
 #define CONSTANTS_H
 
 #include <Wire.h>
+#include <EEPROM.h>
 #include <Adafruit_PWMServoDriver.h>
 
 /* RX pin Definitions */
@@ -98,6 +99,13 @@
 #define BUTTON9 1830
 #define BUTTON10 1968
 
+#define ARM_INTERVAL 15000
+#define PROJECTOR_INTERVAL 1000
+#define BEEP_INTERVAL 25000
+#define FLAPS_INTERVAL 31000
+#define LFS_INTERVAL 120000
+
+
 /* Servo positions */
 int TOP_FLAPS_OPEN[4] = {2300, 2050, 2400, 2300};
 int TOP_FLAPS_CLOSED[4] = {1450, 1200, 1800, 1400};
@@ -154,14 +162,15 @@ bool arms_running = 0;
 
 bool timed_arms = 0;
 bool timed_projector = 0;
-bool timed_top_flaps = 0;
+bool timed_flaps = 0;
 bool timed_beep = 0;
+bool timed_LFS = 0;
 
 unsigned long arm_time = 0;
 unsigned long projector_time = 0;
 unsigned long top_flaps_time = 0;
 unsigned long beep_time = 0;
 
-
+int interlock = 0;
 
 #endif

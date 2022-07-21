@@ -29,6 +29,12 @@ void setup()
   arms.writeMicroseconds(UPPER_ARM, UPPER_ARM_CLOSED);
   arms.writeMicroseconds(LOWER_ARM, LOWER_ARM_CLOSED);
 
+  //set relay pins to output, and disable them 
+  for(int i = 7; i < 13; i++)
+  {
+    pinMode(i, OUTPUT);
+    digitalWrite(i, HIGH);
+  }
   //initalize lights
   //play a startup sound?
   
@@ -78,9 +84,15 @@ void loop()
         if(lcd_function == 1 && interlock <=1)
         {
           if(interlock == 1)//exit interlock mode if button is pressed while in interlock
+          {
             interlock = 0;
+            Serial.println("Interlock released");
+          }
           else  
+          {
             interlock = 1;//enable interlock
+            Serial.println("Interlock set");
+          }
           //setall(80,0,0);
           lcd_function = 0;
         }
@@ -88,7 +100,7 @@ void loop()
         // 2 leg mode
         if(lcd_function == 2 && interlock == 1)
         {
-          Serial.println("MOving to 2 leg mode");
+          Serial.println("Moving to 2 leg mode");
           digitalWrite(LEFT_A_PIN, HIGH);
           digitalWrite(RIGHT_A_PIN, HIGH);
           digitalWrite(LEFT_B_PIN, LOW);
@@ -97,7 +109,8 @@ void loop()
           interlock = 2;
         }
 
-        if(lcd_fnction == 3 && interlock == 2)
+        //leg up
+        if(lcd_function == 3 && interlock == 2)
         {
           Serial.println("Moving leg up");
           digitalWrite(CENTER_DOWN_PIN, HIGH);
@@ -106,7 +119,8 @@ void loop()
           interlock = 3;
         }
 
-        if(lcd_fnction == 4 && interlock == 3)
+        //leg down
+        if(lcd_function == 4 && interlock == 3)
         {
           Serial.println("Moving leg down");
           digitalWrite(CENTER_UP_PIN, HIGH);
@@ -115,14 +129,52 @@ void loop()
           interlock = 4;
         }
 
-        if(lcd_fnction == 4 && interlock == 3)
+        //3-leg mode
+        if(lcd_function == 5 && interlock == 4)
         {
-          Serial.println("Moving leg down");
-          digitalWrite(CENTER_UP_PIN, HIGH);
-          digitalWrite(CENTER_DOWN_PIN, LOW);
+          Serial.println("Moving to 3 leg mode");
+          digitalWrite(LEFT_B_PIN, HIGH);
+          digitalWrite(RIGHT_B_PIN, HIGH);
+          digitalWrite(LEFT_A_PIN, LOW);
+          digitalWrite(RIGHT_A_PIN, LOW);
           lcd_function = 0;
-          interlock = 4;
+          interlock = 1;
         }
+
+        if(lcd_function == 6)
+        {
+          timed_arms = !timed_arms;
+          Serial.println("timed arms");
+          lcd_function = 0;
+        }
+
+        if(lcd_function == 7)
+        {
+          timed_projector = !timed_projector;
+          Serial.println("timed projector");
+          lcd_function = 0;
+        }
+
+        if(lcd_function == 8)
+        {
+          timed_beep= !timed_beep;
+          Serial.println("timed beep");
+          lcd_function = 0;
+        }
+        
+        if(lcd_function == 9)
+        {
+          timed_flaps= !timed_flaps;
+          Serial.println("timed flaps");
+          lcd_function = 0;
+        }
+       
+       if(lcd_function == 10)
+        {
+          timed_LFS= !timed_LFS;
+          Serial.println("timed LFS");
+          lcd_function = 0;
+        } 
       }
 
       get_lcd_max = 0;//finsih getting max

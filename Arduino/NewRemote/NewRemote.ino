@@ -105,19 +105,18 @@ void loop()
     if (LCD_buttons & BUTTON_DOWN) 
     {
       if(function - 1 != 0)
-      {
-        function = function - 1;   
-        print_screen(function);
-      }
+        function -= 1;   
+      else
+        function = 10;
+      print_screen(function);
     }
     if (LCD_buttons & BUTTON_UP) 
     {
       if(function + 1 < 11)
-      {
-        function = function + 1;
-        print_screen(function); 
-
-      }
+        function += 1;
+      else
+        function = 1;
+      print_screen(function); 
     }
 
     if (LCD_buttons & BUTTON_SELECT) 
@@ -162,8 +161,8 @@ void loop()
     {
       analogWrite(3, 0);
   
-      lcd.setCursor(13,1);
-      lcd.print("   ");
+      lcd.setCursor(14,1);
+      lcd.print("  ");
       clear_ch5 = 0;
     }
   
@@ -172,8 +171,8 @@ void loop()
     {
       analogWrite(6, 0);
   
-      lcd.setCursor(13,0);
-      lcd.print("   ");
+      lcd.setCursor(14,0);
+      lcd.print("  ");
       clear_ch6 = 0;
     }
   }
@@ -216,9 +215,27 @@ void print_screen(int func)
         lcd.print("3 LEG MODE      ");
         text_length = 10;
       break;
-      default: 
-        lcd.print(func);
-        lcd.print("             ");
+      case 6:
+        lcd.print("TIMED ARMS      ");
+        text_length = 10;
+      break;
+      case 7:
+        lcd.print("TIMED PROJ.     ");
+        text_length = 11;
+      break;
+      case 8:
+        lcd.print("TIMED BEEPS     ");
+        text_length = 11;
+      break;
+      case 9:
+        lcd.print("TIMED FLAPS     ");
+        text_length = 11;
+      break;
+      case 10:
+        lcd.print("TIMED LFS       ");
+        text_length = 9;
+      break;
+      
     }
   }
   delay(200);
