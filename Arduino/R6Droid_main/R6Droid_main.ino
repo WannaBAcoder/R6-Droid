@@ -403,22 +403,44 @@ void loop()
   {
     if(!top_flaps_waiting)
     {
-      for(int i = 0; i < 4; i++)//open each flap sequentially
-        update_head_servo(i, 0, TOP_FLAPS_OPEN[i], TOP_FLAPS_CLOSED[i]);
-      top_flap_start_time = millis();  
-      top_flaps_waiting = 1;
-      Serial.println(F("Flaps up"));
+      if(current_millis - flap_time >=500)
+      {
+        if(flap_counter <= 3)
+        {
+          Serial.println(flap_counter);
+          update_head_servo(flap_counter, 0, TOP_FLAPS_OPEN[flap_counter], TOP_FLAPS_CLOSED[flap_counter]);
+          flap_counter++; 
+        }
+       
+        else
+        {     
+          if(flap_counter == 4)
+            flap_counter = 3;
+          top_flap_start_time = millis();  
+          top_flaps_waiting = 1;
+          Serial.println(F("Flaps up"));
+        }
+        
+        flap_time = current_millis; 
+      }
     }
 
     else
     {
-      if(millis() - top_flap_start_time >= 1000)
+      if(current_millis - flap_time >=500)
       {
-        for(int i = 0; i < 4; i++)//close each flap sequentially
-          update_head_servo(i, 1, TOP_FLAPS_OPEN[i], TOP_FLAPS_CLOSED[i]);
-        top_flaps_running = 0;
-        top_flaps_waiting = 0;
-        Serial.println(F("Flaps down"));
+        if(flap_counter >= 0)
+        {
+          update_head_servo(flap_counter, 1, TOP_FLAPS_OPEN[flap_counter], TOP_FLAPS_CLOSED[flap_counter]);
+          flap_counter--;
+        }
+        else
+        {
+          top_flaps_running = 0;
+          top_flaps_waiting = 0;
+          Serial.println(F("Flaps down"));
+        }
+        flap_time = current_millis;
       }
     }
   }
@@ -626,35 +648,19 @@ int button_check(int pulse)
 
 void update_head_servo(int servo, int state, int opened, int closed)
 {
-  int var = 2;
-  
-  if(servo == 15)
-    var = 1; 
-    
   if(state)
-  {
-    for (int microsec = opened; microsec > closed; microsec-=var)
-      head.writeMicroseconds(servo, microsec); 
-  }
+    head.writeMicroseconds(servo, closed); 
+ 
   else
-  {
-    for (int microsec = closed; microsec <= opened; microsec+=var)
-      head.writeMicroseconds(servo, microsec);
-  }
+    head.writeMicroseconds(servo, opened);
 }
 
 void update_arm(int arm, int state, int opened, int closed)
 {    
   if(state)
-  {
-    for (int microsec = opened; microsec > closed; microsec-=5)
-      arms.writeMicroseconds(arm, microsec); 
-  }
+    arms.writeMicroseconds(arm, closed); 
   else
-  {
-    for (int microsec = closed; microsec <= opened; microsec+=5)
-      arms.writeMicroseconds(arm, microsec);
-  }
+    arms.writeMicroseconds(arm, opened);
 }
 
 int setall(int R, int G, int B) 

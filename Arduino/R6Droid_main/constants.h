@@ -128,7 +128,7 @@ Adafruit_Soundboard sfx = Adafruit_Soundboard(&sound_board, NULL, SFX_RST);
 
 /* Servo positions */
 int TOP_FLAPS_OPEN[4] = {2300, 2050, 2400, 2300};
-int TOP_FLAPS_CLOSED[4] = {1450, 1200, 1800, 1400};
+int TOP_FLAPS_CLOSED[4] = {1450, 1200, 1750, 1400};
 
 //lcd functions
 int lcd_max = 0;
@@ -163,6 +163,8 @@ unsigned long projector_start_time = 0;
 unsigned long top_flap_start_time = 0;
 unsigned long side_flap_start_time = 0;
 unsigned long arm_start_time = 0;
+unsigned long flap_time = 0;
+int flap_counter = 0;
 
 unsigned long current_millis = 0;
 unsigned long LFS_up_start = 0;
