@@ -9,8 +9,14 @@
 #include <Adafruit_NeoPixel.h>
 
 #define LED_PIN 13
-#define LED_COUNT 40//figure this out
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRBW + NEO_KHZ800);
+#define LED_COUNT 76
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+/*
+ * panel - 36 leds
+ * eye - 24 leds
+ * projector -  16 leds
+ */
+
 
 #define SFX_TX 5
 #define SFX_RX 6
@@ -197,9 +203,11 @@ unsigned long previousLEDMillis = 0;
 unsigned long previousPixelMillis = 0;
 unsigned long previousCascadeMillis = 0;
 
+unsigned long last_eye_update = 0;
+
 long pixelTime = 50;
-long cascadeTime = 300;
-long LEDTime = 500;
+long cascadeTime = 100;
+long LEDTime = 200;
 
 int LEDState = 0;
 int flag1 = 0;

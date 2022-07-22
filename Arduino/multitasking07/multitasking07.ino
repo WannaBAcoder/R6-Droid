@@ -7,7 +7,7 @@
 Adafruit_PWMServoDriver pwm1 = Adafruit_PWMServoDriver(0x41);
 Adafruit_PWMServoDriver pwm2 = Adafruit_PWMServoDriver(0x42);
 
-#define PIN            7
+#define PIN            13
 #define NUMPIXELS      54
 
 #define SFX_TX 5
@@ -72,36 +72,36 @@ int flag40 = 0;
 
 void setup() {
   
-pinMode(10, OUTPUT);  // To 3 Leg mode
-pinMode(11, OUTPUT);  // To 2 leg mode
-pinMode(12, OUTPUT);  // Centre foot up
-pinMode(13, OUTPUT);  // Centre foot down
+//pinMode(10, OUTPUT);  // To 3 Leg mode
+//pinMode(11, OUTPUT);  // To 2 leg mode
+//pinMode(12, OUTPUT);  // Centre foot up
+//pinMode(13, OUTPUT);  // Centre foot down
+//
+//digitalWrite (10, LOW);
+//digitalWrite (11, LOW);
+//digitalWrite (12, LOW);
+//digitalWrite (13, LOW);
 
-digitalWrite (10, LOW);
-digitalWrite (11, LOW);
-digitalWrite (12, LOW);
-digitalWrite (13, LOW);
-
-pwm1.begin();  
-pwm1.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
-pwm2.begin();  
-pwm2.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
+//pwm1.begin();  
+//pwm1.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
+//pwm2.begin();  
+//pwm2.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
 pixels.begin();
 
 ss.begin(9600);
 
 Serial.begin(115200);
 
-servoboard1(0, 0, OPEN_00, CLOSED_00); // ut arm
-servoboard1(1, 1, OPEN_01, CLOSED_01); // ut arm
-servoboard2(0, 1, OPEN_02, CLOSED_02); // holo
-pwm2.setPWM(2, 0, 320); // peri
-pwm1.setPWM(2, 0, 130); // saw arm
-pwm1.setPWM(3, 0, 130); // saw tool
-pwm1.setPWM(4, 0, 525); // probe arm
-pwm1.setPWM(5, 0, 405); // probe tool
-pwm2.setPWM(3, 0, 109); // life form scanner
-pwm2.setPWM(4, 0, 130); // life form scanner top
+//servoboard1(0, 0, OPEN_00, CLOSED_00); // ut arm
+//servoboard1(1, 1, OPEN_01, CLOSED_01); // ut arm
+//servoboard2(0, 1, OPEN_02, CLOSED_02); // holo
+//pwm2.setPWM(2, 0, 320); // peri
+//pwm1.setPWM(2, 0, 130); // saw arm
+//pwm1.setPWM(3, 0, 130); // saw tool
+//pwm1.setPWM(4, 0, 525); // probe arm
+//pwm1.setPWM(5, 0, 405); // probe tool
+//pwm2.setPWM(3, 0, 109); // life form scanner
+//pwm2.setPWM(4, 0, 130); // life form scanner top
 
 }
 
@@ -586,5 +586,3 @@ void loop() {
     }
     
 }
-
-

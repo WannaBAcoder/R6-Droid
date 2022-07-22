@@ -53,14 +53,24 @@ void setup()
   timed_LFS = EEPROM.read(4);
 
   sound_board.begin(9600);
-
+/*
   if (!sfx.reset()) 
   {
     Serial.println(F("Not found"));
     while (1);
   }
-
+*/
   strip.begin();// INITIALIZE NeoPixel strip object (REQUIRED)
+  for(int i = 0; i < LED_COUNT; i++)
+  {
+    if(i < 36)
+      strip.setPixelColor(i, strip.Color(0,0,0));
+    else if(i >=36 && i < 61)
+      strip.setPixelColor(i, strip.Color(0,0,255));  
+    else
+      strip.setPixelColor(i, strip.Color(128,128,128));  
+  }
+ 
   strip.show();/// Turn OFF all pixels ASAP
   
 }
@@ -110,6 +120,7 @@ void loop()
           if(interlock == 1)//exit interlock mode if button is pressed while in interlock
           {
             interlock = 0;
+            setall(0,0,0);
             Serial.println(F("Interlock released"));
           }
           else  
@@ -311,9 +322,9 @@ void loop()
     {
       //turn on neopixel for projector?
       //trigger i2c command to aux arudino to run periscope sequence
-      //Wire.beginTransmission(PERISCOPE_ADDR);
-       //Wire.write(PERISCOPE_ACTIVATE);
-      //Wire.endTransmission();
+       Wire.beginTransmission(PERISCOPE_ADDR);
+       Wire.write(PERISCOPE_ACTIVATE);
+       Wire.endTransmission();
        periscope_waiting = 1;
        periscope_start_time = millis();
        Serial.println(F("Periscope Activated"));
@@ -473,7 +484,7 @@ void loop()
     }
   }
 
-  if(current_millis - previousPixelMillis >= pixelTime) 
+  if(current_millis - previousPixelMillis >= pixelTime && interlock == 0) 
   {  // logic Neopixels
     strip.setPixelColor(pixel, strip.Color(R,G,B));
     strip.setPixelColor((pixel-3), strip.Color(R,G,B));
