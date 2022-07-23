@@ -17,9 +17,8 @@ Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
  * projector -  16 leds
  */
 
-
-#define SFX_TX 5
-#define SFX_RX 6
+#define SFX_TX 6
+#define SFX_RX 5
 #define SFX_RST A0
 SoftwareSerial sound_board = SoftwareSerial(SFX_TX, SFX_RX);//tx, rx
 Adafruit_Soundboard sfx = Adafruit_Soundboard(&sound_board, NULL, SFX_RST);
@@ -119,11 +118,11 @@ Adafruit_Soundboard sfx = Adafruit_Soundboard(&sound_board, NULL, SFX_RST);
 #define BUTTON9 1830
 #define BUTTON10 1968
 
-#define ARM_INTERVAL 5000
-#define PROJECTOR_INTERVAL 5000
-#define BEEP_INTERVAL 5000
-#define FLAPS_INTERVAL 5000
-#define LFS_INTERVAL 5000
+#define ARM_INTERVAL 25000
+#define PROJECTOR_INTERVAL 11000
+#define BEEP_INTERVAL 47000
+#define FLAPS_INTERVAL 61000
+#define LFS_INTERVAL 123000
 
 
 /* Servo positions */

@@ -7,6 +7,16 @@ void setup()
   pinMode(CH5_PIN, INPUT);
   pinMode(CH6_PIN, INPUT);
 
+  sound_board.begin(9600);
+
+  if (!sfx.reset()) 
+  {
+    Serial.println(F("Not found"));
+    while (1);
+  }
+
+  sfx.playTrack(1);//boot sound
+
   //set up head PWM controllers
   head.begin();
   head.setOscillatorFrequency(27000000);
@@ -52,14 +62,8 @@ void setup()
   timed_flaps = EEPROM.read(3);
   timed_LFS = EEPROM.read(4);
 
-  sound_board.begin(9600);
-/*
-  if (!sfx.reset()) 
-  {
-    Serial.println(F("Not found"));
-    while (1);
-  }
-*/
+ 
+
   strip.begin();// INITIALIZE NeoPixel strip object (REQUIRED)
   for(int i = 0; i < LED_COUNT; i++)
   {
@@ -224,7 +228,7 @@ void loop()
         } 
 
         if(lcd_function > 10 && lcd_function < 21)
-          sfx.playTrack((uint8_t)lcd_function-10);
+          sfx.playTrack((uint8_t)lcd_function-9);
       }
 
       get_lcd_max = 0;//finsih getting max
@@ -263,11 +267,11 @@ void loop()
         else if(button_function == 6 && !arms_running)
           arms_running = 1;
         else if(button_function == 7)//play random sound
-          sfx.playTrack(random(1, 12));
+          sfx.playTrack(random(0, 21));
         else if(button_function == 8)//top sound
-           sfx.stop();
+           sfx.playTrack((int)0);//scream
         else if(button_function == 9)//sound vol+
-          sfx.volUp();
+          Serial.println(sfx.volUp());
         else if(button_function == 10)//sound vol-
           sfx.volDown();
       }
@@ -305,7 +309,7 @@ void loop()
   {
     //do beep here
     Serial.println(F("beep"));
-    sfx.playTrack(11);//play sound 11, which is the r2d2 beep
+    sfx.playTrack(7);//play sound 11, which is the r2d2 beep
     beep_time = millis();
   }
 
