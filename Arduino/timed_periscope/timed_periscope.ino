@@ -29,15 +29,12 @@ Servo look_servo;
 
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUM_PIXELS, NEO_PIN, NEO_GRB + NEO_KHZ800);
 
-enum states{waiting, go_up, look_around, go_down};
-uint8_t current_state = waiting;
+bool running = 0;
+
 
 void setup() 
 {
   Serial.begin(115200);
-  pinMode(UP_PIN, INPUT_PULLUP);
-  pinMode(DOWN_PIN, INPUT_PULLUP);
-
   move_servo.attach(MOVE_PIN);
   look_servo.attach(LOOK_PIN);
 
@@ -51,44 +48,28 @@ void setup()
     pixels.setPixelColor(i, pixels.Color(0,0,0));
   pixels.show();
 
-  //set up limit switch interrupts
-  attachInterrupt(digitalPinToInterrupt(UP_PIN), up_isr, FALLING);
-  attachInterrupt(digitalPinToInterrupt(DOWN_PIN), down_isr, FALLING);
   
   //set up as i2c slave
   Wire.begin(0x55);// join i2c bus
   Wire.onReceive(receive);
-
-  delay(100);
-  current_state = waiting;//ensure we're stll in waiting state on startup
 }
 
 void loop() 
 {
-//  if(Serial.available())
-//  {
-//    Serial.read();
-//    current_state = go_up;
-//  }
-  
-  switch(current_state)
+  if(running)
   {
-    case waiting:
-    break;
-    
-    case go_up:
-      move_up();
-    break;
-    
-    case look_around:
-      look();
-    break;
-    
-    case go_down:
-      move_down();
-    break;
+    move_servo.writeMicroseconds(UP);
+    delay(1750);
+    move_servo.writeMicroseconds(OFF);
+    look();
+    delay(250);
+    move_servo.writeMicroseconds(DOWN);
+    delay(1500);
+    move_servo.writeMicroseconds(OFF);
+    running = 0;
   }
-}        
+}
+  
 
 void look(void)
 {
@@ -96,7 +77,7 @@ void look(void)
   for(int i = 0; i < NUM_PIXELS; i++)
     pixels.setPixelColor(i, pixels.Color(138,66,245));
   pixels.show();
-  
+  delay(500);
   //look left, look right,look left, look right
   look_servo.write(LEFT);
   delay(LOOK_TIME);
@@ -115,53 +96,15 @@ void look(void)
   for(int i = 0; i < NUM_PIXELS; i++)
     pixels.setPixelColor(i, pixels.Color(0,0,0));
   pixels.show();
-
-  current_state = go_down;
+  
   return;
-}
-
-void move_up(void)
-{
-  move_servo.writeMicroseconds(UP);
-  delay(250);
-  sei();
-  return;
-}
-
-void move_down(void)
-{
-  move_servo.writeMicroseconds(DOWN);
-  delay(250);
-  sei();
-  current_state = waiting;
-  return;
-}
-
-//triggered when upper limit switch is reached
-void up_isr(void)
-{
-  move_servo.writeMicroseconds(OFF);
-  cli();//disable interrupt
-  delay(250);
-  current_state = look_around;
-}
-
-void down_isr(void)
-{
-  //turn off the move_servo
-  move_servo.writeMicroseconds(OFF);
-  cli();
-  delay(250);
-  current_state = waiting;
 }
 
 void receive(void) 
 {
-  cli();
   int val = Wire.read();    // receive byte as an integer
   Serial.println(val);         // print the integer
   
-  if(val == 0xAA && current_state == waiting)
-    current_state = go_up;
+  if(val == 0xAA && !running)
+    running = 1;
 }
-       
