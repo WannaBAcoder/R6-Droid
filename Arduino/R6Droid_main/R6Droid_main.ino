@@ -126,6 +126,10 @@ void loop()
             interlock = 0;
             setall(0,0,0);
             Serial.println(F("Interlock released"));
+            digitalWrite(LEFT_B_PIN, HIGH);
+            digitalWrite(RIGHT_B_PIN, HIGH);
+            digitalWrite(LEFT_A_PIN, HIGH);
+            digitalWrite(RIGHT_A_PIN, HIGH);
           }
           else  
           {
@@ -141,10 +145,15 @@ void loop()
         if(lcd_function == 2 && interlock == 1)
         {
           Serial.println(F("Moving to 2 leg mode"));
+
           digitalWrite(LEFT_A_PIN, HIGH);
           digitalWrite(RIGHT_A_PIN, HIGH);
           digitalWrite(LEFT_B_PIN, LOW);
           digitalWrite(RIGHT_B_PIN, LOW);
+
+          digitalWrite(CENTER_UP_PIN, HIGH);
+          digitalWrite(CENTER_DOWN_PIN, HIGH);
+          
           lcd_function = 0;
           interlock = 2;
         }
@@ -154,7 +163,12 @@ void loop()
         {
           Serial.println(F("Moving leg up"));
           digitalWrite(CENTER_DOWN_PIN, HIGH);
-          digitalWrite(CENTER_UP_PIN, LOW);  
+          digitalWrite(CENTER_UP_PIN, LOW); 
+           
+          digitalWrite(LEFT_B_PIN, HIGH);
+          digitalWrite(RIGHT_B_PIN, HIGH);
+          digitalWrite(LEFT_A_PIN, HIGH);
+          digitalWrite(RIGHT_A_PIN, HIGH);
           lcd_function = 0;
           interlock = 3;
         }
@@ -165,6 +179,7 @@ void loop()
           Serial.println(F("Moving leg down"));
           digitalWrite(CENTER_UP_PIN, HIGH);
           digitalWrite(CENTER_DOWN_PIN, LOW);
+
           lcd_function = 0;
           interlock = 4;
         }
@@ -173,6 +188,10 @@ void loop()
         if(lcd_function == 5 && interlock == 4)
         {
           Serial.println(F("Moving to 3 leg mode"));
+
+          digitalWrite(CENTER_UP_PIN, HIGH);
+          digitalWrite(CENTER_DOWN_PIN, HIGH);
+
           digitalWrite(LEFT_B_PIN, HIGH);
           digitalWrite(RIGHT_B_PIN, HIGH);
           digitalWrite(LEFT_A_PIN, LOW);
@@ -358,7 +377,7 @@ void loop()
         Serial.println(F("LFS up"));   
       break;
       case LOOK:
-        if(millis() - LFS_up_start >= 3700 && LFS_looking == 0)//time limit to run continuous rot. servo up
+        if(millis() - LFS_up_start >= 3000 && LFS_looking == 0)//time limit to run continuous rot. servo up
         {          
           head.writeMicroseconds(LFS_BASE, LFS_OFF);
           update_head_servo(LFS_DISH, 0, LFS_LEFT, LFS_HOME);
@@ -369,7 +388,7 @@ void loop()
         
         if(LFS_looking == 1)
         {
-          if(millis() - LFS_look_start >= 1000)
+          if(millis() - LFS_look_start >= 1500)
           {
             //look right
             update_head_servo(LFS_DISH, 1, LFS_LEFT, LFS_RIGHT);
@@ -380,7 +399,7 @@ void loop()
 
       if(LFS_looking == 2)
       {
-        if(millis() - LFS_look_start >= 1000)
+        if(millis() - LFS_look_start >= 1500)
         {
           update_head_servo(LFS_DISH, 0, LFS_HOME, LFS_RIGHT);
           LFS_state = DOWN;
@@ -392,7 +411,7 @@ void loop()
       }
     break;
     case DOWN:
-      if(millis() - LFS_down_start >= 4750)
+      if(millis() - LFS_down_start >= 3250)
       {        
         head.writeMicroseconds(LFS_BASE, LFS_OFF);
         LFS_state = OFF;
@@ -493,16 +512,16 @@ void loop()
   {
     if(!arms_waiting)
     {
-      update_arm(UPPER_ARM, 1, UPPER_ARM_OPEN, UPPER_ARM_CLOSED);
-      update_arm(LOWER_ARM, 1, LOWER_ARM_OPEN, LOWER_ARM_CLOSED);
+      update_arm(UPPER_ARM, 0, UPPER_ARM_OPEN, UPPER_ARM_CLOSED);
+      update_arm(LOWER_ARM, 0, LOWER_ARM_OPEN, LOWER_ARM_CLOSED);
       arms_waiting = 1;
       arm_start_time = millis();
       Serial.println(F("Arms open"));
     }
        if(millis() - arm_start_time >= 1000)
     {
-      update_arm(UPPER_ARM, 0, UPPER_ARM_OPEN, UPPER_ARM_CLOSED);
-      update_arm(LOWER_ARM, 0, LOWER_ARM_OPEN, LOWER_ARM_CLOSED);
+      update_arm(UPPER_ARM, 1, UPPER_ARM_OPEN, UPPER_ARM_CLOSED);
+      update_arm(LOWER_ARM, 1, LOWER_ARM_OPEN, LOWER_ARM_CLOSED);
       
       arms_waiting = 0;
       arms_running = 0;

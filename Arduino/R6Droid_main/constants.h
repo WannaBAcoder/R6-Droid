@@ -19,7 +19,7 @@ Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 #define SFX_TX 6
 #define SFX_RX 5
-#define SFX_RST A0
+#define SFX_RST 4
 SoftwareSerial sound_board = SoftwareSerial(SFX_TX, SFX_RX);//tx, rx
 Adafruit_Soundboard sfx = Adafruit_Soundboard(&sound_board, NULL, SFX_RST);
 
@@ -55,7 +55,7 @@ Adafruit_Soundboard sfx = Adafruit_Soundboard(&sound_board, NULL, SFX_RST);
 #define PROJECTOR_DOWN 2500
 
 #define LFS_UP 1600
-#define LFS_DOWN 1400
+#define LFS_DOWN 1375
 #define LFS_OFF 1500
 
 #define LFS_LEFT 2400
@@ -64,11 +64,11 @@ Adafruit_Soundboard sfx = Adafruit_Soundboard(&sound_board, NULL, SFX_RST);
 
 #define UPPER_ARM 0
 #define UPPER_ARM_OPEN 2000
-#define UPPER_ARM_CLOSED 400
+#define UPPER_ARM_CLOSED 500
 
 #define LOWER_ARM 15
-#define LOWER_ARM_OPEN 2400
-#define LOWER_ARM_CLOSED 400
+#define LOWER_ARM_OPEN 500
+#define LOWER_ARM_CLOSED 2250
 
 /* i2c devices */
 #define ARM_PWM 0x41
